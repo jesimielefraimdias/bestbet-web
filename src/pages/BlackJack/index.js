@@ -33,7 +33,6 @@ import "./style.css";
 
 
 const BlackJack = () => {
-
     const [addTooltip, setAddTooltip] = useState("Add");
     const [stopTooltip, setStopTooltip] = useState("Stop");
     const [splitTooltip, setSplitTooltip] = useState("Split");
@@ -510,8 +509,20 @@ const BlackJack = () => {
 
     useEffect(() => {
 
+        const getProbabilidade = async _ => {
 
-    }, []);
+            console.log("Teste");
+            const res = await axiosServer.post("/BlackJack", {
+                deck,
+                cards: hand[currentHand].cards,
+            });
+
+            setAddTooltip(addTooltip + 1);
+        }
+
+        getProbabilidade();
+
+    }, [updateStyle]);
 
 
     return (
