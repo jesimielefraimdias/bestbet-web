@@ -8,6 +8,7 @@ import ControleAdministrator from "../pages/ControleAdministrator";
 import CreateEvaluation from "../pages/CreateEvaluation";
 import ControleEvaluation from "../pages/ControleEvaluation";
 import NotFound from "../pages/NotFound";
+import BlackJack from "../pages/BlackJack";
 
 const AdministratorRoutes = () => {
     return (
@@ -34,6 +35,10 @@ const AdministratorRoutes = () => {
 
             <Route exact path="/ControleEvaluation">
                 <ControleEvaluation />
+            </Route>
+
+            <Route exact path="/BlackJack">
+                <BlackJack />
             </Route>
 
             <Route>

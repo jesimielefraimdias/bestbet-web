@@ -5,7 +5,7 @@ import { useUser } from "../../contexts/auth";
 import "./style.css";
 
 const Sidebar = () => {
-    const { signOut, isLogged, userAcessLevel } = useUser();
+    const { signOut, userAcessLevel } = useUser();
     const history = useHistory();
 
     return (
@@ -27,6 +27,14 @@ const Sidebar = () => {
                 <NavLink to="/Profile" className="sideBarText">
                     <i className="fas fa-user" />
                     Perfil
+                </NavLink>
+            </SBRoutesStyled>
+
+            <SBRoutesStyled>
+
+                <NavLink to="/BlackJack" className="sideBarText">
+                    <i className="fas fa-user" />
+                    BlackJack
                 </NavLink>
             </SBRoutesStyled>
 

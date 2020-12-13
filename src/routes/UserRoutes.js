@@ -5,6 +5,7 @@ import Home from "../pages/Home";
 import Profile from "../pages/Profile";
 import CreateEvaluation from "../pages/CreateEvaluation";
 import NotFound from "../pages/NotFound";
+import BlackJack from "../pages/BlackJack";
 
 const UserRoutes = () => {
 
@@ -21,6 +22,10 @@ const UserRoutes = () => {
 
                 <Route exact path="/CreateEvaluation">
                     <CreateEvaluation />
+                </Route>
+
+                <Route exact path="/BlackJack">
+                    <BlackJack />
                 </Route>
 
                 <Route>

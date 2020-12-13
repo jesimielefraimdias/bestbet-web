@@ -6,6 +6,7 @@ import Profile from "../pages/Profile";
 import CreateEvaluation from "../pages/CreateEvaluation";
 import ControleEvaluation from "../pages/ControleEvaluation";
 import NotFound from "../pages/NotFound";
+import BlackJack from "../pages/BlackJack";
 
 const OperatorRoutes = () => {
 
@@ -26,6 +27,10 @@ const OperatorRoutes = () => {
 
                 <Route exact path="/ControleEvaluation">
                     <ControleEvaluation />
+                </Route>
+
+                <Route exact path="/BlackJack">
+                    <BlackJack />
                 </Route>
 
                 <Route>
