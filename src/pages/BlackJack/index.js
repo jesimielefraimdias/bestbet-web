@@ -36,8 +36,8 @@ const BlackJack = () => {
     const [addTooltip, setAddTooltip] = useState("Add");
     const [stopTooltip, setStopTooltip] = useState("Stop");
     const [splitTooltip, setSplitTooltip] = useState("Split");
-    const [doubleTooltip, setDoubleTooltip] = useState("Double");
-    const [hiddenTooltip, setHiddenTooltip] = useState("Hidden")
+    const [doubleTooltip, setDoubleTooltip] = useState([]);
+    const [hiddenTooltip, setHiddenTooltip] = useState([]);
     const [double, setDouble] = useState(false);
 
     const [updateStyle, setUpdateStyle] = useState(false);
@@ -77,73 +77,73 @@ const BlackJack = () => {
 
         setDeck([
             {
-                card: "A",
+                card: "A", //0
                 cardsAvailable: numberOfDeckes * 4,
                 cardImage: require("../../assets/deck/1.jpeg"),
 
             },
             {
-                card: "2",
+                card: "2", //1
                 cardsAvailable: numberOfDeckes * 4,
                 cardImage: require("../../assets/deck/2.jpeg"),
             },
             {
-                card: "3",
+                card: "3", //2
                 cardsAvailable: numberOfDeckes * 4,
                 cardImage: require("../../assets/deck/3.jpeg"),
             },
             {
-                card: "4",
+                card: "4", //3
                 cardsAvailable: numberOfDeckes * 4,
                 cardImage: require("../../assets/deck/4.jpeg"),
             },
             {
-                card: "5",
+                card: "5", //4
                 cardsAvailable: numberOfDeckes * 4,
                 cardImage: require("../../assets/deck/5.jpeg"),
 
             },
             {
-                card: "6",
+                card: "6", //5
                 cardsAvailable: numberOfDeckes * 4,
                 cardImage: require("../../assets/deck/6.jpeg"),
             },
             {
-                card: "7",
+                card: "7", //6
                 cardsAvailable: numberOfDeckes * 4,
                 cardImage: require("../../assets/deck/7.jpeg"),
 
             },
             {
-                card: "8",
+                card: "8", //7
                 cardsAvailable: numberOfDeckes * 4,
                 cardImage: require("../../assets/deck/8.jpeg"),
 
             },
             {
-                card: "9",
+                card: "9", //8
                 cardsAvailable: numberOfDeckes * 4,
                 cardImage: require("../../assets/deck/9.jpeg"),
             },
             {
-                card: "10",
+                card: "10", //9
                 cardsAvailable: numberOfDeckes * 4,
                 cardImage: require("../../assets/deck/10.jpeg"),
 
             },
             {
-                card: "Q",
+                card: "Q", //10
                 cardsAvailable: numberOfDeckes * 4,
                 cardImage: require("../../assets/deck/Q.jpeg"),
 
             },
             {
-                card: "J",
+                card: "J", //11
                 cardsAvailable: numberOfDeckes * 4,
                 cardImage: require("../../assets/deck/J.jpeg"),
             },
             {
-                card: "K",
+                card: "K", //12
                 cardsAvailable: numberOfDeckes * 4,
                 cardImage: require("../../assets/deck/K.jpeg"),
             }
@@ -581,18 +581,31 @@ const BlackJack = () => {
 
             // console.log("Teste");
 
-            const res = await axiosServer.post("/BlackJack", {
-                numberOfDeckes,
-                deck,
-                cards: hand[currentHand].cards,
+            const resOverflow = await axiosServer.post("/BlackJack", {
+                valuePlayerHand: totalCurrentPlayerHand(),
+                numberOfDeckes, //Número de deckes
+                deck,   //As cartas do deck,
+                cards: hand[currentHand].cards, //As cartas da mão do jogador
             });
-            const { data } = res;
 
-            setAddTooltip(data.addTooltip);
-            setStopTooltip(data.stopTooltip);
-            setSplitTooltip(data.splitTooltip);
-            setDoubleTooltip(data.doubleTooltip);
-            setHiddenTooltip(data.hiddenTooltip);
+            const resHidden = await axiosServer.post("/hidden", {
+                deck,   //As cartas do deck,
+            });
+
+            const resDouble = await axiosServer.post("/double", {
+                valuePlayerHand: totalCurrentPlayerHand(),
+                deck,   //As cartas do deck,
+            });
+
+            if (!resOverflow.data.addTooltip) {
+                setAddTooltip("0");
+            } else {
+                setAddTooltip(resOverflow.data.addTooltip);
+            }
+            setHiddenTooltip(resHidden.data.hiddenTooltip);
+            setDoubleTooltip(resDouble.data.doubleTooltip);
+            // setStopTooltip(data.stopTooltip);
+            // setSplitTooltip(data.splitTooltip);
 
         }
 
@@ -716,6 +729,7 @@ const BlackJack = () => {
                             } else {
                                 addSelectedCards();
                             }
+                            setUpdateStyle(!updateStyle);
                         }}
                     >
                         {removeCard ? "Remover cartas selecionadas" : "Adicionar cartas selecionadas"}
@@ -817,7 +831,11 @@ const BlackJack = () => {
                                                             data-for="hiddenTooltip"
                                                             src={require("../../assets/deck/hidden.png")} />
                                                         <ReactTooltip id="hiddenTooltip" type="info">
-                                                            {hiddenTooltip}
+                                                            {
+                                                                hiddenTooltip.length !== 0 ? hiddenTooltip.map(element => {
+                                                                    return <p>{element}</p>
+                                                                }) : ""
+                                                            }
                                                         </ReactTooltip>
                                                     </>
                                                     :
@@ -898,7 +916,11 @@ const BlackJack = () => {
                             </ButtonStyled>
 
                             <ReactTooltip id="double" type="info">
-                                {doubleTooltip}
+                                {
+                                    doubleTooltip && doubleTooltip.length !== 0 ? doubleTooltip.map(element => {
+                                        return <p>{element}</p>
+                                    }) : ""
+                                }
                             </ReactTooltip>
 
                             <ButtonStyled

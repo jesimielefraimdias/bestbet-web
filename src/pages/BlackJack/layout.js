@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const ContentStyled = styled.div`
     grid-area: CO;
     display: block;
-    border: 5px solid blue;
+    /* border: 5px solid blue; */
     justify-content: center;
     height: 100vh;
 `;
@@ -16,7 +16,7 @@ export const ContainerStyled = styled.div`
 `;
 
 export const SubContentStyled = styled.div`
-    border: 5px solid gray;
+    /* border: 5px solid gray; */
     grid-area: CO;
     display: grid;
     grid-template-columns: 250px auto 250px;
@@ -29,7 +29,7 @@ export const LeftStyled = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    border: 2px solid green;
+    /* border: 2px solid green; */
     background-color: var(--white);
 `;
 
@@ -38,7 +38,7 @@ export const RightStyled = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    border: 2px solid green;
+    /* border: 2px solid green; */
     background-color: var(--white);
 `;
 
@@ -46,7 +46,7 @@ export const HandStyled = styled.div`
     display: block;
     grid-area: H;
     background-color: var(--white);
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
     border-radius: 10px;
     width: 100%;
 `;
@@ -57,12 +57,12 @@ export const TitleStyled = styled.div`
     margin: 10px auto;
     font-size: 20px;
     font-weight: bold;
-    border: 1px solid purple;
+    /* border: 1px solid purple; */
 `;
 
 export const ContainerBackAndNextStyled = styled.div`
     display: flex;
-    border: 2px solid black;
+    /* border: 2px solid black; */
     align-items: center;
     justify-content: flex-end;
 `;
@@ -127,7 +127,7 @@ export const ContainerDeck = styled.div`
     flex-direction: row;
     overflow-x: scroll;
     /* background-color: gray; */
-    border: 1px solid red;
+    /* border: 1px solid red; */
     /* z-index:2; */
     /* flex: 1; */
     align-items: center;
@@ -147,7 +147,7 @@ export const ContainerDeckOnHand = styled.div`
     display: flex;
     flex-direction: row;
     overflow-x: scroll;
-    border: 1px solid red;
+    /* border: 1px solid red; */
     /* flex: 1; */
     padding: 0 15px;
     height: 100%;
@@ -212,7 +212,7 @@ export const NumberOfDeckStyled = styled.div`
     display: flex;
     flex: 1;
     text-align: left;
-    border: 1px solid red;
+    /* border: 1px solid red; */
 `;
 
 
