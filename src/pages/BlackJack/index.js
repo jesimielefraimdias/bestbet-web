@@ -57,10 +57,12 @@ const BlackJack = () => {
     ]);
     const [dealerHand, setDealerHand] = useState(
         {
-            cards: [{
-                card: "H",
-                quantity: 1
-            }],
+            cards: [
+                {
+                    card: "H",
+                    quantity: 1
+                }
+            ],
             activated: true,
         }
     );
@@ -222,50 +224,116 @@ const BlackJack = () => {
     }
 
     const totalDealerHand = () => {
-        let accumulator = 0;
+        let accumulator = 0, cards = null, as = 0;
 
+        if (dealerHand.cards.length > 1) {
+            cards = dealerHand.cards;
+        }
 
-        dealerHand.cards.forEach(element => {
-            let card = decodeCard(element.card);
-            card = card >= 10 ? 10 : card + 1;
-            accumulator += card * element.quantity;
-        });
+        if (cards !== null) {
+
+            cards.forEach(element => {
+
+                if (element.card === "A") {
+                    as = element.quantity;
+                }
+
+                let card = element.card === "A" ?
+                    11 : decodeCard(element.card) >= 10 ?
+                        10 : decodeCard(element.card) + 1;
+                accumulator += card * element.quantity;
+            });
+
+            if (as > 0 && accumulator > 21) {
+                console.log("entrou?");
+                for (let i = 0; i < as; i++) {
+                    if (accumulator > 21) {
+                        accumulator -= 10;
+                    } else {
+                        break;
+                    }
+                }
+
+            }
+
+        }
 
         return accumulator;
+
     }
 
     const totalCurrentPlayerHand = () => {
-        let accumulator = 0;
+        let accumulator = 0, cards = null, as = 0;
 
-
-        if (hand[currentHand]) {
-
-            hand[currentHand].cards.forEach(element => {
-                let card = decodeCard(element.card);
-                card = card >= 10 ? 10 : card + 1;
-                accumulator += card * element.quantity;
-            });
+        if (hand[currentHand].cards.length > 0) {
+            cards = hand[currentHand].cards;
         }
 
+        if (cards !== null) {
+            cards.forEach(element => {
+
+                if (element.card === "A") {
+                    as = element.quantity;
+                }
+
+                let card = element.card === "A" ?
+                    11 : decodeCard(element.card) >= 10 ?
+                        10 : decodeCard(element.card) + 1;
+                accumulator += card * element.quantity;
+
+            });
+
+            if (as > 0 && accumulator > 21) {
+
+                for (let i = 0; i < as; i++) {
+                    if (accumulator > 21) {
+                        accumulator -= 10;
+                    } else {
+                        break;
+                    }
+                }
+
+            }
+
+        }
         return accumulator;
     }
 
     const TotalCurrentHand = () => {
-        let accumulator = 0;
-
+        let accumulator = 0, cards = null, as = 0;
 
         if (nextRound && dealerHand) {
-            dealerHand.cards.forEach(element => {
-                let card = decodeCard(element.card);
-                card = card >= 10 ? 10 : card + 1;
-                accumulator += card * element.quantity;
-            });
+            cards = dealerHand.cards;
         } else if (!nextRound && hand[currentHand]) {
-            hand[currentHand].cards.forEach(element => {
-                let card = decodeCard(element.card);
-                card = card >= 10 ? 10 : card + 1;
+            cards = hand[currentHand].cards;
+        }
+
+        if (cards !== null) {
+
+            cards.forEach(element => {
+
+                if (element.card === "A") {
+                    as = element.quantity;
+                }
+
+                let card = element.card === "A" ?
+                    11 : decodeCard(element.card) >= 10 ?
+                        10 : decodeCard(element.card) + 1;
+
                 accumulator += card * element.quantity;
             });
+
+            if (as > 0 && accumulator > 21) {
+
+                for (let i = 0; i < as; i++) {
+                    if (accumulator > 21) {
+                        accumulator -= 10;
+                    } else {
+                        break;
+                    }
+                }
+
+            }
 
         }
         return accumulator;
@@ -473,7 +541,6 @@ const BlackJack = () => {
         }
     }
 
-    const disabledDealerAdd = _ => !dealerHand.activated || !nextRound || proceed > 0;
 
     const findHidden = _ => {
         return dealerHand.cards.findIndex(element => {
@@ -485,6 +552,7 @@ const BlackJack = () => {
         });
     }
 
+    const disabledDealerAdd = _ => !dealerHand.activated || !nextRound || proceed > 0 || findHidden() !== -1;
     const disabledShuffleAndKeep = _ => {
 
         const isHidden = findHidden() === -1 ? false : true;
@@ -511,13 +579,21 @@ const BlackJack = () => {
 
         const getProbabilidade = async _ => {
 
-            console.log("Teste");
+            // console.log("Teste");
+
             const res = await axiosServer.post("/BlackJack", {
+                numberOfDeckes,
                 deck,
                 cards: hand[currentHand].cards,
             });
+            const { data } = res;
 
-            setAddTooltip(addTooltip + 1);
+            setAddTooltip(data.addTooltip);
+            setStopTooltip(data.stopTooltip);
+            setSplitTooltip(data.splitTooltip);
+            setDoubleTooltip(data.doubleTooltip);
+            setHiddenTooltip(data.hiddenTooltip);
+
         }
 
         getProbabilidade();
@@ -578,7 +654,14 @@ const BlackJack = () => {
                     </div>
 
                     <TitleStyled>
-                        {removeCard ? "Selecione cartas a serem retiradas do deck" : lengthHand() === 0 ? "Selecione duas cartas" : "Selecione uma carta"}
+                        {removeCard ?
+                            "Selecione cartas a serem retiradas do deck" :
+                            lengthHand() === 0 ?
+                                "Selecione duas cartas para o jogador" :
+                                nextRound ?
+                                    "Selecione uma carta para a mesa" :
+                                    "Selecione uma carta para o jogador"
+                        }
                     </TitleStyled>
 
                     <ContainerDeck>
@@ -604,10 +687,11 @@ const BlackJack = () => {
 
                                                 const aux = parseInt(target.currentTarget.value);
                                                 const _currentHandCards = currentHandCards;
-                                                if (typeof aux === "number" && aux >= 0 &&
-                                                    (aux <= value.cardsAvailable && (maxAddCard() || aux < currentHandCards[index])
+                                                if (typeof aux === "number" && aux >= 0 && aux <= value.cardsAvailable &&
+                                                    ((maxAddCard() || aux < currentHandCards[index])
                                                         || removeCard)) {
                                                     _currentHandCards[index] = aux;
+
                                                     setCurrentHandCards(_currentHandCards);
                                                     setUpdateStyle(!updateStyle);
                                                 }
@@ -657,10 +741,10 @@ const BlackJack = () => {
                             </ButtonStyled>
 
                             <ButtonStyled
-                                disabled={proceed !== 1 || !nextRound || findHidden() === -1}
+                                disabled={!nextRound || findHidden() === -1}
                                 // nextRound={nextRound}
                                 onClick={_ => {
-                                    if (proceed === 1 && nextRound && findHidden() >= 0) {
+                                    if (nextRound && findHidden() >= 0) {
                                         setAddCard(true);
                                         setShowCard(true);
                                     }
@@ -693,7 +777,12 @@ const BlackJack = () => {
                             <ContainerBackAndNextStyled>
 
                                 <NumberOfDeckStyled>
-                                    Quantidade de decks: {numberOfDeckes}, Soma da mão: {totalDealerHand()}
+                                    Quantidade de decks: {numberOfDeckes},
+                                    {
+                                        findHidden() === -1 ?
+                                            ` Valor da mão: ${totalDealerHand()}` :
+                                            ` Valor incompleto da mão: ${totalDealerHand()}`
+                                    }
                                 </NumberOfDeckStyled>
 
 
@@ -829,7 +918,7 @@ const BlackJack = () => {
                             </TitleStyled>
                             <ContainerBackAndNextStyled>
                                 <NumberOfDeckStyled>
-                                    Soma da mão: {totalCurrentPlayerHand()}
+                                    Valor da mão: {totalCurrentPlayerHand()}
                                 </NumberOfDeckStyled>
 
                                 <div style={{
